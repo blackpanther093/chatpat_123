@@ -14,16 +14,18 @@ python app_chatbot.py
 ```
 chatbot_project/
 │
-├── app_chatbot.py         # Main chatbot app using Gradio
+├── app_chatbot.py         # Main chatbot app
 ├── requirements.txt
 ├── README.md
-│
-├── chatbot/
-│   ├── __init__.py
-│   ├── core.py
-│   ├── config.py
-│   ├── utils.py
-│   └── model.py
+├── templates
+  ├── chat.html
+  ├── register.html
+  ├── login.html
+  ├── 404.html
+  ├── activate_email.html
+
+
+
 ```
 
 ## ✨ Features
