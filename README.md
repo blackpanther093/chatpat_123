@@ -23,6 +23,11 @@ chatbot_project/
   ├── login.html
   ├── 404.html
   ├── activate_email.html
+├── static
+  ├── script.js
+  ├── style.css
+  ├── style1.css
+  
 
 
 
