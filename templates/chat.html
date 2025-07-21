@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot UI</title>
+   <link rel="stylesheet" href="/static/style.css" />
+
+</head>
+<body>
+  <input type="hidden" id="chat_id" value="{{ chat_id }}">
+  <div class="sidebar" id="sidebar">
+    <h3>Chats</h3>
+    <button onclick="startNewChat()">➕ New Chat</button>
+    <div id="chat-list"></div>
+  </div>
+  <div class="main">
+     <!-- testing -->
+<div class="auth-bar">
+  {% if current_user.is_authenticated %}
+    <span class="auth-welcome">👋 Welcome, <strong>{{ current_user.username }}</strong></span>
+    <a class="auth-btn" href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a class="auth-btn" href="{{ url_for('login') }}">Login</a>
+    <a class="auth-btn" href="{{ url_for('register') }}">Register</a>
+  {% endif %}
+</div>
+ <!-- testing -->
+
+    <div class="top-controls">
+      <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+<div class="model-selector-wrapper" style="position: relative;">
+<button class="model-button" onclick="toggleModelMenu()" id="selected-model-button">🧠 LLaMA 4 Maverick</button>
+  <div id="modelMenu" class="dropdown-menu" style="display: none; max-height: 300px; overflow-y: auto;">
+      <div onclick="selectModel('openai/gpt-4.1')"
+        onmouseenter="showModelInfo('Chatgpt 4.1', 'Smartest: Github')">
+          Chatgpt 4.1 – Smartest (Github)
+    </div>
+
+    <div onclick="selectModel('meta-llama/llama-4-maverick-17b-128e-instruct')"
+         onmouseenter="showModelInfo('🦙 LLaMA 4 Maverick', '🧠 Smart model, best for deep reasoning and long conversations. Source: Groq')">
+         🦙 LLaMA 4 Maverick – Images + Reasoning (Groq)
+    </div>
+
+    <div onclick="selectModel('llama-3.3-70b-versatile')"
+         onmouseenter="showModelInfo('🧠 LLaMA 3.3 70B', '🎓 Highly detailed, great memory, great for assignments. Source: Groq')">
+         🧠 LLaMA 3.3 70B – Assignments (Groq)
+    </div>
+
+    <div onclick="selectModel('qwen/qwen3-30b-a3b:free')"
+         onmouseenter="showModelInfo('📘 Qwen 30B', '🧠 Deep logical reasoning, long context, clean responses. Source: OpenRouter')">
+         📘 Qwen 30B – Reasoning (OpenRouter)
+    </div>
+
+    <div onclick="selectModel('qwen/qwen2.5-vl-32b-instruct:free')"
+         onmouseenter="showModelInfo('🌟 Qwen 2.5 VL', '🖼️ Strongest image model. Handles complex visuals + text. Source: OpenRouter')">
+         🌟 Qwen 2.5 VL 32B – Images + Reasoning (OpenRouter) ✅
+    </div>
+
+    <div onclick="selectModel('llama3-70b-8192')"
+         onmouseenter="showModelInfo('^_~ LLaMA 3 70B', '🤝 GPT-3.5 level performance, structured answers. Source: Groq')">
+         ^_~ LLaMA 3 70B – Balanced (Groq)
+    </div>
+
+    <div onclick="selectModel('llama3-8b-8192')"
+         onmouseenter="showModelInfo('O_O LLaMA 3 8B', '⚡ Lightweight sibling of 70B, faster, less detailed. Source: Groq')">
+         O_O LLaMA 3 8B – Light Chat (Groq)
+    </div>
+
+    <div onclick="selectModel('deepseek-r1-distill-llama-70b')"
+         onmouseenter="showModelInfo('🔥 DeepSeek R1 Distill', '⚡ Fastest detailed LLaMA. Ideal for summaries, tasks. Source: Groq')">
+         🔥 DeepSeek R1 Distill – Fast Reasoning (Groq)
+    </div>
+
+    <div onclick="selectModel('nvidia/llama-3.3-nemotron-super-49b-v1:free')"
+         onmouseenter="showModelInfo('⚙️ Nvidia Nemotron 49B', '🧮 Great for math, code, logic-heavy prompts. Also supports images. Source: OpenRouter')">
+         ⚙️ Nvidia Nemotron 49B – Code + Math + Images (OpenRouter) ✅
+    </div>
+
+    <div onclick="selectModel('meta-llama/llama-4-scout-17b-16e-instruct')"
+         onmouseenter="showModelInfo('🦾 LLaMA 4 Scout', '🖼️ Image capable, very structured & balanced responses. Source: Groq')">
+         🦾 LLaMA 4 Scout – Image + Balanced (Groq) ✅
+    </div>
+
+    <div onclick="selectModel('qwen/qwen3-32b')"
+         onmouseenter="showModelInfo('🌍 Qwen 32B', '🌐 Very multilingual, precise structured answers. Source: Groq')">
+         🌍 Qwen 32B – Multilingual (Groq)
+    </div>
+
+    <div onclick="selectModel('deepseek/deepseek-r1-0528-qwen3-8b:free')"
+         onmouseenter="showModelInfo('🧠 DeepSeek R1 Qwen 8B', '🔁 Fast + accurate generalist. Good memory. Source: OpenRouter')">
+         🧠 DeepSeek R1 Qwen 8B – General Use (OpenRouter)
+    </div>
+
+    <div onclick="selectModel('gemma2-9b-it')"
+         onmouseenter="showModelInfo('🔬 Gemma 2 9B IT', '📘 Instruction-tuned for clear explanations. Source: Groq')">
+         🔬 Gemma 2 9B IT – Explanation Tasks (Groq)
+    </div>
+
+    <div onclick="selectModel('mistral-saba-24b')"
+         onmouseenter="showModelInfo('✨ Mistral SABA 24B', '💬 Friendly, fast, good fallback. Casual chat model. Source: Groq')">
+         ✨ Mistral SABA 24B – Conversational (Groq)
+    </div>
+
+    <div onclick="selectModel('compound-beta')"
+         onmouseenter="showModelInfo('🧪 Compound Beta', '🎨 Experimental, creative prompts, fun answers. Source: Groq')">
+         🧪 Compound Beta – Creative (Groq)
+    </div>
+
+    <div onclick="selectModel('qwen/qwen3-8b:free')"
+         onmouseenter="showModelInfo('🌐 Qwen 8B', '🌍 Smallest multilingual Qwen. Surprisingly good. Source: OpenRouter')">
+         🌐 Qwen 8B – Multilingual Light (OpenRouter)
+    </div>
+
+    <div onclick="selectModel('thudm/glm-4-32b:free')"
+         onmouseenter="showModelInfo('🗣️ GLM 4', '🧏 Great multilingual dialogue. Source: OpenRouter')">
+         🗣️ GLM 4 – Multilingual Chat (OpenRouter)
+    </div>
+
+    <div onclick="selectModel('meta-llama/llama-prompt-guard-2-86m')"
+         onmouseenter="showModelInfo('🛡️ Prompt Guard', '✏️ Rewrites prompts, grammar correction. Niche use. Source: Groq')">
+         🛡️ Prompt Guard – Prompt Filtering (Groq)
+    </div>
+
+    <div onclick="selectModel('google/gemma-3-27b-it:free')"
+         onmouseenter="showModelInfo('📄 Gemma 3 27B IT', '📖 Long-form answers, instruction tuned. Source: OpenRouter')">
+         📄 Gemma 3 27B IT – Long Answers (OpenRouter)
+    </div>
+  </div>
+
+  <!-- Hidden model input -->
+  <input type="hidden" id="ai_model" value="meta-llama/llama-4-maverick-17b-128e-instruct">
+
+  <!-- Description tooltip -->
+  <div id="model-info-box" style="position:absolute; top:-110px; left:0; width:320px; background:#222; color:#ccc; padding:10px; border-radius:8px; display:none; border:1px solid #444;"></div>
+</div>
+    </div>
+    <div id="flash"></div>
+    <div class="chat-display" id="chat-box"></div>
+    <div class="temp-bar">
+      <div class="temp-selector">
+  <button id="temp-button" onclick="toggleTempOptions()">🎯 Balanced ▼</button>
+  <ul id="temp-options" class="hidden">
+    <li data-value="0.2">🧠 Precise</li>
+    <li data-value="0.5">🎯 Balanced</li>
+    <li data-value="0.8">💡 Creative</li>
+    <li data-value="1.0">🔥 Wild</li>
+  </ul>
+  </div>
+      </div>
+    <div class="chat-input" id="chat-input" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+
+  <input type="hidden" id="temperature" value="0.5">
+
+      <label class="preview-wrapper">
+        📎
+        <input type="file" id="images" style="display:none" multiple onchange="previewImages(this)">
+        <div id="preview-container" style="display:flex; gap:10px;"></div>
+      </label>
+
+      <!-- Web Search Button -->
+      <label class="web-search-toggle" title="Toggle Web Search">
+  <input type="checkbox" id="webSearchToggle" onchange="toggleWebSearch()">
+  <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" stroke-width="2"/>
+  </svg>
+</label>
+<input type="hidden" id="web_search_enabled" value="false">
+
+
+
+      <textarea id="question" placeholder="Type your question..." required oninput="autoResize(this)"></textarea>
+      <button onclick="askQuestion()">➤</button>
+      <!-- <button id="copy-question-btn" class="copy-btn">📋</button> -->
+    </div>
+  </div>
+
+  <!-- Scroll to Bottom Button -->
+<button id="scrollToBottom" class="scroll-btn" aria-label="Scroll to bottom">
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
+    <path d="M12 16.5l-6-6 1.41-1.42L12 13.67l4.59-4.59L18 10.5z"/>
+  </svg>
+</button>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
