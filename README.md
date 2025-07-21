@@ -15,6 +15,8 @@ python app_chatbot.py
 chatbot_project/
 │
 ├── app_chatbot.py         # Main chatbot app
+├── fnkdd.py
+├── rag.py
 ├── requirements.txt
 ├── README.md
 ├── templates
